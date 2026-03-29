@@ -27,3 +27,9 @@ gtkwave waveform.vcd
 ---
 # Documentation
 For more info, read the generated Transaction Log in the terminal or examine the SystemVerilog TikZ Architecture Diagram for component mapping.
+---
+# More Test Cases
+For running a random number
+```bash
+ ./obj_dir/Vtop +verilator+seed+$RANDOM
+```
