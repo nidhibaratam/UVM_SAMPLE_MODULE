@@ -1,40 +1,67 @@
-# UVM_SAMPLE_MODULE
+# Minimal UVM-style Testbench Example (FIFO)
 
-A **Verilator-optimized** UVM-style verification environment for a **Synchronous FIFO RTL Design**. This project demonstrates a high-performance, class-based testbench featuring a randomized Driver, Monitor-ready interfaces with clocking blocks, and an automated Scoreboard with a golden reference model.
+A simple, Verilator-compatible SystemVerilog verification example using a FIFO design.
 
-## Key Features
-*   **Class-Based Architecture:** Modular UVM-style hierarchy for scalability.
-*   **Automated Verification:** Self-checking Scoreboard compares RTL against a reference model.
-*   **High Performance:** Optimized for Verilator 5.0+ simulation speeds.
-*   **Visibility:** Generates standard VCD files for waveform analysis.
+## What
+This example demonstrates a minimal class-based testbench with:
+- driver (random stimulus generation)
+- monitor (cycle-aligned observation)
+- scoreboard (self-checking reference model)
 
----
+## Why
+BlackParrot currently lacks a lightweight verification reference.
 
-## Installation
+This example provides a starting point for building verification environments for future modules (e.g., ALU, cache, BP-Stream).
 
-Ensure you have **Verilator 5.030+** and standard C++ build tools installed.
+## Features
+- Simple FIFO DUT (8-depth)
+- Randomized stimulus
+- Self-checking PASS/FAIL output
+- Verilator-compatible
+- Waveform generation (VCD)
 
-```bash
-# Install Verilator via pip or your distribution's package manager
-python3 -m pip install verilator
-```
-## How to Use
-1. Build and Execute
-Run the automated build script to compile the RTL and testbench:
+## How to Run
+
+### Option 1 (recommended)
 ```bash
 chmod +x run.sh
 ./run.sh
 ```
 
-2. Analyze Results
-View the generated timing diagrams to debug signal transitions:
+### Option 2 (manual)
+```bash
+verilator --sv --timing --trace --cc top.sv --exe sim_main.cpp
+make -C obj_dir -f Vtop.mk
+./obj_dir/Vtop
+```
+## Output
+
+The simulation prints:
+WRITE transactions
+PASS / FAIL checks
+Final summary (PASS / FAIL count)
+Example:
+```
+WRITE: 3b
+PASS: 3b
+PASS=85 FAIL=0
+```
+## Waveform Viewing:
 ```bash
 gtkwave waveform.vcd
 ```
 
-3. Run with Custom Seeds
-To test with different randomized sequences, pass a specific seed to the binary:
-```bash
-./obj_dir/Vtop +verilator+seed+$RANDOM
-```
+## Notes
+FIFO read has 1-cycle latency, handled in the monitor
+Designed to be minimal and easy to understand
+Not a full UVM implementation (no factory, sequences, coverage)
 
+## File Structure
+```
+fifo.sv         - FIFO RTL
+fifo_if.sv      - Interface with clocking blocks
+tb_classes.sv   - Driver, Monitor, Scoreboard
+top.sv          - Testbench top
+sim_main.cpp    - Verilator simulation harness
+run.sh          - Build and run script
+```
